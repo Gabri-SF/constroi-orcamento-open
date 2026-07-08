@@ -1,0 +1,214 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 97%;
+    --foreground: 215 25% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 12%;
+
+    --primary: 217 72% 35%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 142 60% 32%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 20% 94%;
+    --muted-foreground: 215 15% 45%;
+
+    --accent: 215 28% 20%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 215 20% 86%;
+    --input: 215 20% 91%;
+    --ring: 217 72% 35%;
+
+    --radius: 0.5rem;
+
+    /* Brand tokens used throughout the app */
+    --brand-blue: 217 72% 35%;
+    --brand-green: 142 60% 32%;
+    --brand-dark: 215 35% 10%;
+    --brand-blue-light: 217 72% 96%;
+    --brand-green-light: 142 60% 94%;
+
+    /* Table */
+    --table-head-bg: 215 25% 92%;
+    --table-stripe-bg: 215 25% 98%;
+    --table-border: 215 20% 82%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground antialiased; }
+}
+
+/* ── Print / PDF ─────────────────────────────────────────── */
+@media print {
+  @page {
+    size: A4;
+    /* 56px bottom margin reserves space for the fixed footer on every page.
+       No left/right margins — document padding handles those. */
+    margin: 15mm 0 56px 0;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background: white !important;
+  }
+
+  .no-print { display: none !important; }
+
+  /* Strip layout from wrappers so #print-document flows from top-left
+     and paginates naturally across multiple pages. */
+  #app-shell {
+    display: block !important;
+    min-height: 0 !important;
+    background: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #app-shell > main {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #preview-wrapper {
+    display: block !important;
+  }
+
+  #print-document {
+    display: block !important;   /* override flex so content paginates across pages */
+    width: 100% !important;
+    min-height: 0 !important;
+    padding: 0 56px !important;   /* 56px ≈ 15mm replaces the removed @page side margins */
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Footer: fixed to the bottom of every printed page, full paper width.
+     The @page margin-bottom: 56px reserves exactly this space on each page. */
+  #doc-footer {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* Page break rules — keep category headers attached to their tables,
+     and avoid breaking inside table rows. */
+  .doc-category-title {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .doc-table tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* ── Document preview (A4 paper simulation) ──────────────── */
+.document-paper {
+  width: 794px;          /* A4 at 96dpi */
+  min-height: 1123px;    /* A4 at 96dpi */
+  background: white;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06);
+  padding: 48px 56px;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #1e293b;
+}
+
+/* ── Document typography ─────────────────────────────────── */
+.doc-title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #1e293b;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.doc-section-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: hsl(var(--brand-blue));
+  margin-bottom: 4px;
+}
+
+.doc-divider {
+  border: none;
+  border-top: 1.5px solid #1e293b;
+  margin: 12px 0;
+}
+
+/* ── Document table ──────────────────────────────────────── */
+.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+
+.doc-table th {
+  background: hsl(var(--table-head-bg));
+  border: 1px solid hsl(var(--table-border));
+  padding: 5px 6px;
+  font-weight: 600;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+}
+
+.doc-table td {
+  border: 1px solid hsl(var(--table-border));
+  padding: 4px 6px;
+  vertical-align: top;
+}
+
+.doc-table tbody tr:nth-child(even) td {
+  background: hsl(var(--table-stripe-bg));
+}
+
+.doc-table .row-total td {
+  background: hsl(142 60% 94%);
+  font-weight: 600;
+}
+
+/* ── Category heading ────────────────────────────────────── */
+.doc-category-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: hsl(var(--brand-blue));
+  background: hsl(var(--brand-blue-light));
+  padding: 5px 8px;
+  border-left: 3px solid hsl(var(--brand-blue));
+  margin-bottom: 0;
+}

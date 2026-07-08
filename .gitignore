@@ -1,0 +1,30 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Orçamentos guardados localmente (ficheiros JSON por orçamento, contêm
+# dados reais de clientes) — ignorados por defeito para não serem commitados.
+# Remover a linha abaixo se realmente quiser versionar os orçamentos com o git.
+orcamentos/*
+!orcamentos/.gitkeep
