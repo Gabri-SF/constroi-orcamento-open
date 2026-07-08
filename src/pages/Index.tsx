@@ -47,6 +47,7 @@ export default function Index() {
   const [hideValues, setHideValues] = useState(false);
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [saveName, setSaveName] = useState("");
+  const [saveMode, setSaveMode] = useState<'save' | 'copy'>('save');
 
   // Recalculate totals whenever relevant fields change
   useEffect(() => {
@@ -92,17 +93,28 @@ export default function Index() {
     toast({ title: "Orçamento eliminado" });
   };
 
-  const openSaveDialog = () => {
-    setSaveName(currentName || `Orçamento ${budget.clientData.name || new Date().toLocaleDateString('pt-PT')}`);
+  const openSaveDialog = (mode: 'save' | 'copy' = 'save') => {
+    setSaveMode(mode);
+    setSaveName(
+      mode === 'copy'
+        ? `${currentName} (cópia)`
+        : currentName || `Orçamento ${budget.clientData.name || new Date().toLocaleDateString('pt-PT')}`
+    );
     setSaveDialogOpen(true);
   };
 
   const confirmSave = async () => {
-    const saved = await saveBudget(budget, saveName, currentId || undefined);
-    setCurrentId(saved.id);
-    setCurrentName(saved.name);
+    const isCopy = saveMode === 'copy';
+    const saved = await saveBudget(budget, saveName, isCopy ? undefined : currentId || undefined);
+    if (!isCopy) {
+      setCurrentId(saved.id);
+      setCurrentName(saved.name);
+    }
     setSaveDialogOpen(false);
-    toast({ title: currentId ? "Guardado" : "Novo orçamento criado", description: `"${saved.name}" guardado com sucesso.` });
+    toast({
+      title: isCopy ? "Cópia criada" : currentId ? "Guardado" : "Novo orçamento criado",
+      description: `"${saved.name}" guardado com sucesso.`,
+    });
   };
 
   const handleQuickSave = () => {
@@ -111,7 +123,7 @@ export default function Index() {
         toast({ title: "Guardado", description: `"${currentName}" atualizado.` })
       );
     } else {
-      openSaveDialog();
+      openSaveDialog('save');
     }
   };
 
@@ -185,7 +197,7 @@ export default function Index() {
                   </Button>
                 )}
                 {view === 'edit' && currentId && (
-                  <Button onClick={openSaveDialog} variant="outline" size="sm">
+                  <Button onClick={() => openSaveDialog('copy')} variant="outline" size="sm">
                     Guardar Cópia
                   </Button>
                 )}
@@ -263,7 +275,7 @@ export default function Index() {
       <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Guardar orçamento</DialogTitle>
+            <DialogTitle>{saveMode === 'copy' ? 'Guardar cópia' : 'Guardar orçamento'}</DialogTitle>
           </DialogHeader>
           <div className="py-2">
             <Input
